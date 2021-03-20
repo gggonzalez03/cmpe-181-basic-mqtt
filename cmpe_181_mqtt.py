@@ -14,6 +14,7 @@ from google.cloud import storage
 
 # Instantiates a client
 # Make sure to run export GOOGLE_APPLICATION_CREDENTIALS="./secret/google-secret.json" first
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./secret/google-secret.json"
 storage_client = storage.Client()
 # storage_client = storage.Client.from_service_account_json('./secret/google-secret.json')
 
