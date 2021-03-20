@@ -37,6 +37,12 @@ Note: Publisher and Subscriber should be running in separate terminals
 9. Run the publisher: `python3 cmpe_181_mqtt.py`
 10. Run the subscriber: `python3 subscriber/sub.py spherical-treat-308100 device-telemetry-sub`
 
+## Significant changes I made to fit my data
+1. In `cmpe_181_mqtt.py` file, function `read_sensor()` around line 327
+2. In `cmpe_181_mqtt.py` file, function `createJSON()` around line 348
+3. In `cmpe_181_mqtt.py` file, `class Args` around line 164
+4. In `gcpnodefunction/index.js` file, BigQuery table name and its fields. Around lines 54, 74, and 90
+
 
 ## Relevant Screenshots (Other screenshots are in the "screenshots" folder)
 1. PubSub Terminals
