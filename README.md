@@ -31,6 +31,9 @@ https://cloud.google.com/storage/docs/reference/libraries#cloud-console
 Note: "spherical-treat-308100" is my project id. This should be replaced by yours.
 
 8. Create Cloud Function: Upload `gcpnodefunction/index.js` while creating a function. Also upload `gcpnodefunction/package.json`
+
+Note: Publisher and Subscriber should be running in separate terminals
+
 9. Run the publisher: `python3 cmpe_181_mqtt.py`
 10. Run the subscriber: `python3 subscriber/sub.py spherical-treat-308100 device-telemetry-sub`
 
