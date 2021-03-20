@@ -324,27 +324,23 @@ def mqtt_device_demo(args):
 
 
 def read_sensor(count):
-    tempF = 20 + 0.2*count + (random.random() * 15)
-    humidity = 60 + 0.3*count+ (random.random() * 20)
-    temp = '{0:0.2f}'.format(tempF)
-    hum = '{0:0.2f}'.format(humidity)
-    sensorZipCode = 95192#"94043"
-    sensorLat = 37.3382082+ (random.random() /100)#"37.421655"
-    sensorLong = -121.8863286 + (random.random() /100)#"-122.085637"
-    sensorLatf = '{0:0.6f}'.format(sensorLat)
-    sensorLongf = '{0:0.6f}'.format(sensorLong)
-    return (temp, hum, sensorZipCode, sensorLatf, sensorLongf)
+    ram_usage = count
+    cpu_usage = count
+    number_of_threads = count
+    number_of_processes = count
+    battery_percentage = count
+    return (ram_usage, cpu_usage, number_of_threads, number_of_processes, battery_percentage)
 
-def createJSON(reg_id, dev_id, timestamp, zip, lat, long, temperature, humidity):
+def createJSON(reg_id, dev_id, timestamp, ram_usage, cpu_usage, number_of_threads, number_of_processes, battery_percentage):
     data = {
       'registry_id' : reg_id,
       'device_id' : dev_id,
-      'timecollected' : timestamp,
-      'zipcode' : zip,
-      'latitude' : lat,
-      'longitude' : long,
-      'temperature' : temperature,
-      'humidity' : humidity
+      'time_collected' : timestamp,
+      'ram_usage' : ram_usage,
+      'cpu_usage' : cpu_usage,
+      'number_of_threads' : number_of_threads,
+      'number_of_processes' : number_of_processes,
+      'battery_percentage' : battery_percentage
     }
 
     json_str = json.dumps(data)
@@ -374,9 +370,9 @@ def simulatesensor_mqtt_device_demo(args):
         client.loop()
 
         currentTime = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
-        (temp, hum, sensorZipCode, sensorLat, sensorLong) = read_sensor(i)
-        #(id, timestamp, zip, lat, long, temperature, humidity, img_file)
-        payloadJSON = createJSON(args.registry_id, args.device_id, currentTime, sensorZipCode, sensorLat, sensorLong, temp, hum)
+        (ram_usage, cpu_usage, number_of_threads, number_of_processes, battery_percentage) = read_sensor(i)
+
+        payloadJSON = createJSON(args.registry_id, args.device_id, currentTime, ram_usage, cpu_usage, number_of_threads, number_of_processes, battery_percentage)
 
         #payload = '{}/{}-image-{}'.format(args.registry_id, args.device_id, i)
         print('Publishing message {}/: \'{}\''.format(

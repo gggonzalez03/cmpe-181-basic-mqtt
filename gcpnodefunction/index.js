@@ -45,14 +45,13 @@ exports.iotPubSubBQ = async (data, context) => {
 
     const iotdata = JSON.parse(name);
     console.log(iotdata.registry_id);
-    //  "Hello, {"registry_id": "CMPEIoT1", "device_id": "cmpe181dev1", "timecollected": "2020-04-27 02:00:21", "zipcode": "94043", "latitude": "37.421655", "longitude": "-122.085637", "temperature": "25.15", "humidity": "78.93", "image_file": "img9.jpg"}!"   
 
     // Inserts data into a bigquery table
     var rows = [iotdata];
     console.log(`Uploading data to bigquery: ${JSON.stringify(rows)}`);
     bigquery
         .dataset('iottest')
-        .table('test1')
+        .table('mac_cpu_data')
         .insert(rows)
         .then((foundErrors) => {
             rows.forEach((row) => console.log('Inserted: ', row));
@@ -69,19 +68,18 @@ exports.iotPubSubBQ = async (data, context) => {
 
     //Inserts data into Firestore db
     //const document = db.doc(`iottests/${iotdata.device_id}`);
-    //  "Hello, {"registry_id": "CMPEIoT1", "device_id": "cmpe181dev1", "timecollected": "2020-04-27 02:00:21", "zipcode": "94043", "latitude": "37.421655", "longitude": "-122.085637", "temperature": "25.15", "humidity": "78.93", "image_file": "img9.jpg"}!"   
     //console.log(iotdata.device_id);
     let dbcol = 'iotnewdata';
     // Add a new document with a generated id.
     let addDoc = db.collection(dbcol).add({
         registry_id: iotdata.registry_id,
         device_id: iotdata.device_id,
-        'timecollected': iotdata.timecollected,
-        'zipcode': iotdata.zipcode,
-        'latitude': iotdata.latitude,
-        'longitude': iotdata.longitude,
-        'temperature': iotdata.temperature,
-        'humidity': iotdata.humidity,
+        'time_collected': iotdata.time_collected,
+        'ram_usage': iotdata.ram_usage,
+        'cpu_usage': iotdata.cpu_usage,
+        'number_of_threads': iotdata.number_of_threads,
+        'number_of_processes': iotdata.number_of_processes,
+        'battery_percentage': iotdata.battery_percentage,
     }).then(ref => {
         console.log('Added document with ID: ', iotdata.device_id);
     });
@@ -90,13 +88,12 @@ exports.iotPubSubBQ = async (data, context) => {
     try {
         //db.collection('iotnewdata').doc("cmpe181dev1").set
         db.collection('iotonedata').doc(iotdata.device_id).set({
-            'timecollected': iotdata.timecollected,
-            'zipcode': iotdata.zipcode,
-            'latitude': iotdata.latitude,
-            'longitude': iotdata.longitude,
-            'temperature': iotdata.temperature,
-            'humidity': iotdata.humidity,
-            'image_file': iotdata.image_file
+            'time_collected': iotdata.time_collected,
+            'ram_usage': iotdata.ram_usage,
+            'cpu_usage': iotdata.cpu_usage,
+            'number_of_threads': iotdata.number_of_threads,
+            'number_of_processes': iotdata.number_of_processes,
+            'battery_percentage': iotdata.battery_percentage,
         });
         console.log(`State updated for ${iotdata.device_id}`);
     } catch (error) {
