@@ -77,7 +77,7 @@ exports.iotPubSubBQ = async (data, context) => {
         'time_collected': iotdata.time_collected,
         'ram_usage': iotdata.ram_usage,
         'cpu_usage': iotdata.cpu_usage,
-        'number_of_threads': iotdata.number_of_threads,
+        'number_of_cores': iotdata.number_of_cores,
         'number_of_processes': iotdata.number_of_processes,
         'battery_percentage': iotdata.battery_percentage,
     }).then(ref => {
@@ -91,7 +91,7 @@ exports.iotPubSubBQ = async (data, context) => {
             'time_collected': iotdata.time_collected,
             'ram_usage': iotdata.ram_usage,
             'cpu_usage': iotdata.cpu_usage,
-            'number_of_threads': iotdata.number_of_threads,
+            'number_of_cores': iotdata.number_of_cores,
             'number_of_processes': iotdata.number_of_processes,
             'battery_percentage': iotdata.battery_percentage,
         });

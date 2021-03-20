@@ -8,6 +8,7 @@ import logging
 import datetime
 import argparse
 import json
+import psutil
 
 from google.cloud import storage
 
@@ -324,21 +325,34 @@ def mqtt_device_demo(args):
 
 
 def read_sensor(count):
-    ram_usage = count
-    cpu_usage = count
-    number_of_threads = count
-    number_of_processes = count
-    battery_percentage = count
-    return (ram_usage, cpu_usage, number_of_threads, number_of_processes, battery_percentage)
 
-def createJSON(reg_id, dev_id, timestamp, ram_usage, cpu_usage, number_of_threads, number_of_processes, battery_percentage):
+		# print(psutil.virtual_memory().percent)
+		# print(psutil.cpu_percent(interval=0.1, percpu=True))
+		# print(len(psutil.pids()))
+		# print(psutil.cpu_count())
+		# print(psutil.sensors_battery().percent)
+
+		cpu_cores = psutil.cpu_percent(interval=0.1, percpu=True)
+		cpu_cores_json = {}
+		for index, core in enumerate(cpu_cores, start=0):
+			cpu_cores_json['cpu' + str(index)] = core
+
+		ram_usage = psutil.virtual_memory().percent
+		cpu_usage = json.dumps(cpu_cores_json)
+		number_of_cores = psutil.cpu_count()
+		number_of_processes = len(psutil.pids())
+		battery_percentage = psutil.sensors_battery().percent
+
+		return (ram_usage, cpu_usage, number_of_cores, number_of_processes, battery_percentage)
+
+def createJSON(reg_id, dev_id, timestamp, ram_usage, cpu_usage, number_of_cores, number_of_processes, battery_percentage):
     data = {
       'registry_id' : reg_id,
       'device_id' : dev_id,
       'time_collected' : timestamp,
       'ram_usage' : ram_usage,
       'cpu_usage' : cpu_usage,
-      'number_of_threads' : number_of_threads,
+      'number_of_cores' : number_of_cores,
       'number_of_processes' : number_of_processes,
       'battery_percentage' : battery_percentage
     }
@@ -370,9 +384,9 @@ def simulatesensor_mqtt_device_demo(args):
         client.loop()
 
         currentTime = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
-        (ram_usage, cpu_usage, number_of_threads, number_of_processes, battery_percentage) = read_sensor(i)
+        (ram_usage, cpu_usage, number_of_cores, number_of_processes, battery_percentage) = read_sensor(i)
 
-        payloadJSON = createJSON(args.registry_id, args.device_id, currentTime, ram_usage, cpu_usage, number_of_threads, number_of_processes, battery_percentage)
+        payloadJSON = createJSON(args.registry_id, args.device_id, currentTime, ram_usage, cpu_usage, number_of_cores, number_of_processes, battery_percentage)
 
         #payload = '{}/{}-image-{}'.format(args.registry_id, args.device_id, i)
         print('Publishing message {}/: \'{}\''.format(
