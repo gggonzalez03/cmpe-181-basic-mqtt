@@ -17,7 +17,8 @@ With python3
 2. python3 -m venv pyenv
 3. source pyenv/bin/activate
 4. pip install -r requirements.txt
-5. export GOOGLE_APPLICATION_CREDENTIALS="/secret/google-secret.json"
+5. export GOOGLE_APPLICATION_CREDENTIALS="./secret/google-secret.json"
+6. Download roots.pem from here: https://pki.google.com/roots.pem, save that in the "not_so_secret" folder
 
 
 
