@@ -1,3 +1,9 @@
+
+## Intro
+This repo is a setup to send data to the Google Cloud and save it in BigQuery. Concept of PubSub is also explored. I created a
+table called "mac_cpu_data," which will record certain data about a Mac machine. This includes ram usage, cpu usage, number of
+logical cores, number or processes currently running, and current battery percentage.
+
 ## Initial Setup
 First step is to create a project and enable Cloud IoT Core and Cloud Pub/Sub APIs through the following link: 
 https://console.cloud.google.com/flows/enableapi?apiid=cloudiot.googleapis.com,pubsub&_ga=2.42615333.-1267971805.1554925613
