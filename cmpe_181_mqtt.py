@@ -7,6 +7,7 @@ import os
 import logging
 import datetime
 import argparse
+import json
 
 from google.cloud import storage
 
@@ -321,4 +322,74 @@ def mqtt_device_demo(args):
 		#     client.loop()
 	# [END iot_mqtt_run]
 
-mqtt_device_demo(args)
+
+def read_sensor(count):
+    tempF = 20 + 0.2*count + (random.random() * 15)
+    humidity = 60 + 0.3*count+ (random.random() * 20)
+    temp = '{0:0.2f}'.format(tempF)
+    hum = '{0:0.2f}'.format(humidity)
+    sensorZipCode = 95192#"94043"
+    sensorLat = 37.3382082+ (random.random() /100)#"37.421655"
+    sensorLong = -121.8863286 + (random.random() /100)#"-122.085637"
+    sensorLatf = '{0:0.6f}'.format(sensorLat)
+    sensorLongf = '{0:0.6f}'.format(sensorLong)
+    return (temp, hum, sensorZipCode, sensorLatf, sensorLongf)
+
+def createJSON(reg_id, dev_id, timestamp, zip, lat, long, temperature, humidity):
+    data = {
+      'registry_id' : reg_id,
+      'device_id' : dev_id,
+      'timecollected' : timestamp,
+      'zipcode' : zip,
+      'latitude' : lat,
+      'longitude' : long,
+      'temperature' : temperature,
+      'humidity' : humidity
+    }
+
+    json_str = json.dumps(data)
+    return json_str
+
+def simulatesensor_mqtt_device_demo(args):
+
+    """Connects a device, sends data, and receives data."""
+    # [START iot_mqtt_run]
+    global minimum_backoff_time
+    global MAXIMUM_BACKOFF_TIME
+
+    # Publish to the events or state topic based on the flag.
+    sub_topic = 'events' if args.message_type == 'event' else 'state'
+
+    mqtt_topic = '/devices/{}/{}'.format(args.device_id, sub_topic)
+
+    jwt_iat = datetime.datetime.utcnow()
+    jwt_exp_mins = args.jwt_expires_minutes
+    client = get_client(
+        args.project_id, args.cloud_region, args.registry_id,
+        args.device_id, args.private_key_file, args.algorithm,
+        args.ca_certs, args.mqtt_bridge_hostname, args.mqtt_bridge_port)
+
+    # Publish num_messages messages to the MQTT bridge once per second.
+    for i in range(1, args.num_messages + 1):
+        client.loop()
+
+        currentTime = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+        (temp, hum, sensorZipCode, sensorLat, sensorLong) = read_sensor(i)
+        #(id, timestamp, zip, lat, long, temperature, humidity, img_file)
+        payloadJSON = createJSON(args.registry_id, args.device_id, currentTime, sensorZipCode, sensorLat, sensorLong, temp, hum)
+
+        #payload = '{}/{}-image-{}'.format(args.registry_id, args.device_id, i)
+        print('Publishing message {}/: \'{}\''.format(
+            i, payloadJSON))
+
+        # Publish "payload" to the MQTT topic. qos=1 means at least once
+        # delivery. Cloud IoT Core also supports qos=0 for at most once
+        # delivery.
+        client.publish(mqtt_topic, payloadJSON, qos=1)
+
+        
+        # Send events every second. State should not be updated as often
+        time.sleep(1)
+
+# mqtt_device_demo(args)
+simulatesensor_mqtt_device_demo(args)

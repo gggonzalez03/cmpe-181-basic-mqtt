@@ -20,5 +20,6 @@ With python3
 5. export GOOGLE_APPLICATION_CREDENTIALS="./secret/google-secret.json"
 6. Download roots.pem from here: https://pki.google.com/roots.pem, save that in the "not_so_secret" folder
 7. Create Subscription: gcloud pubsub subscriptions create projects/spherical-treat-308100/subscriptions/device-telemetry-sub --topic=projects/spherical-treat-308100/topics/device-telemetry
-8. Run the publisher: python3 cmpe_181_mqtt.py
-9. Run the subscriber: python3 subscriber/sub.py spherical-treat-308100 device-telemetry-sub
+8. Create Cloud Function
+9. Run the publisher: python3 cmpe_181_mqtt.py
+10. Run the subscriber: python3 subscriber/sub.py spherical-treat-308100 device-telemetry-sub
