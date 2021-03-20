@@ -7,20 +7,21 @@ In the Google Cloud Platform, open menu bar on the top left and look for "IoT Co
 2. Create a device
 2.1. Create key pair: openssl req -x509 -newkey rsa:2048 -keyout rsa_private.pem -nodes -out rsa_cert.pem -subj "/CN=unused" -days 365
 3. Upload Public Key (rsa_cert.pem)
-4. Set up authentication
+4. Set up authentication -- name the downloaded .json file as "google-secret.json". Store that under the "secret" folder.
 https://cloud.google.com/storage/docs/reference/libraries#cloud-console
 
 
 With python3
 
-(source pyenv/bin/activate)
-(pip install -r requirements.txt)
-
 1. python3 -m pip install --user virtualenv
 2. python3 -m venv pyenv
 3. source pyenv/bin/activate
+4. pip install -r requirements.txt
+5. export GOOGLE_APPLICATION_CREDENTIALS="/secret/google-secret.json"
 
-4. pip install google-cloud-iot
-5. pip install google-api-python-client
-6. pip install google-cloud-storage
-7. pip install cryptography pyjwt paho-mqtt
+
+
+5. pip install google-cloud-iot
+6. pip install google-api-python-client
+7. pip install google-cloud-storage
+8. pip install cryptography pyjwt paho-mqtt
